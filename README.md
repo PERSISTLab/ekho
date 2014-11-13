@@ -9,6 +9,8 @@ Our paper, ["Ekho: Realistic and Repeatable Experimentation for Tiny Energy-Harv
 
 This paper received the BEST PAPER Award at the [12th ACM Conference on Embedded Networked Sensor Systems (SenSys 2014)](http://sensys.acm.org/2014/), held in Memphis, Tennessee November 3-6, 2014.
 
+For more information on the concept, design, and evaluation of Ekho, checkout the [presentation](https://github.com/jhester/ekho/blob/master/presentation/ekho-sensys-notes.pdf?raw=true), [notes](https://github.com/jhester/ekho/blob/master/presentation/ekho-sensys-notes.pdf?raw=true), and the [paper](http://dl.acm.org/citation.cfm?id=2668332.2668336&coll=DL&dl=ACM&CFID=454323450&CFTOKEN=17646013)  itself.
+
 
 ## Prerequisites
 - Mac or Linux
@@ -23,7 +25,7 @@ This paper received the BEST PAPER Award at the [12th ACM Conference on Embedded
 
 ### Analog-Front End 
 ![image](https://644db4de3505c40a0444-327723bce298e3ff5813fb42baeefbaa.ssl.cf1.rackcdn.com/uploads/project/top_image/FU0xl3ek/i.png)
-The PCB for the analog front end can [be ordered from OSH Park](https://oshpark.com/shared_projects/FU0xl3ek). We are hosting it on OSH Park so anyone can easily, and cheaply get the PCB printed. 
+To do anything useful with Ekho, you need the custom designed Analog-front-end. The PCB for the analog front end can [be ordered from OSH Park](https://oshpark.com/shared_projects/FU0xl3ek). We are hosting it on OSH Park so anyone can easily, and cheaply get the PCB printed. 
 
 Once the PCB is in hand, you can either:
 
