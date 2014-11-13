@@ -35,6 +35,7 @@ Once the PCB is in hand, you can either:
 - - -
 ## Recording IV-surfaces
 ![image](https://raw.githubusercontent.com/jhester/ekho/master/record.png)
+
 1. Flash the Teensy 3.1 with the `code/record/micro/EkhoRecord_t3.ino` image using the Arduino application.
 
 2. Connect the Teensy 3.1, the digital potentiometer (synthetic load) and the Analog-front end as shown above.
@@ -59,6 +60,7 @@ Once the PCB is in hand, you can either:
 
 ## Replaying IV-surfaces
 ![image](https://raw.githubusercontent.com/jhester/ekho/master/emulate.png)
+
 1. Flash a Teensy 3.1 with the `code/emulate/micro/EkhoEmulate_t3.ino` image using the Arduino application.
 
 2. Flash a seoncd Teensy 3.1 with the `code/emulate/micro/EkhoDAQ_t3.ino` image using the Arduino application.
