@@ -9,7 +9,6 @@ Our paper, ["Ekho: Realistic and Repeatable Experimentation for Tiny Energy-Harv
 
 This paper received the BEST PAPER Award at the [12th ACM Conference on Embedded Networked Sensor Systems (SenSys 2014)](http://sensys.acm.org/2014/), held in Memphis, Tennessee November 3-6, 2014.
 
-- - -
 
 ## Prerequisites
 - Mac or Linux
@@ -35,9 +34,10 @@ Once the PCB is in hand, you can either:
 
 - - -
 ## Recording IV-surfaces
+![image](https://raw.githubusercontent.com/jhester/ekho/master/record.png)
 1. Flash the Teensy 3.1 with the `code/record/micro/EkhoRecord_t3.ino` image using the Arduino application.
 
-2. Connect the Teensy 3.1, the digital potentiometer (synthetic load) and the Analog-front end.
+2. Connect the Teensy 3.1, the digital potentiometer (synthetic load) and the Analog-front end as shown above.
 
 3. Connect jumpers JP4 and the left side of JP1 for replay path.
 
@@ -58,6 +58,7 @@ Once the PCB is in hand, you can either:
 
 
 ## Replaying IV-surfaces
+![image](https://raw.githubusercontent.com/jhester/ekho/master/emulate.png)
 1. Flash a Teensy 3.1 with the `code/emulate/micro/EkhoEmulate_t3.ino` image using the Arduino application.
 
 2. Flash a seoncd Teensy 3.1 with the `code/emulate/micro/EkhoDAQ_t3.ino` image using the Arduino application.
@@ -68,7 +69,7 @@ Once the PCB is in hand, you can either:
 
 3. Set the gain on the Analog-front-end
 
-3. Connect both Teensy 3.1's, the device under test, and the Analog-front end.
+3. Connect both Teensy 3.1's, the device under test, and the Analog-front end as shown above.
 
 3. Build the `emulate_render` executable
 
