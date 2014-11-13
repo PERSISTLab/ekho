@@ -1,8 +1,8 @@
 Ekho: Realistic and Repeatable Experimentation for Tiny Energy-Harvesting Sensors
 ===
-** *Josiah Hester, Timothy Scott, Jacob Sorber*  
-*School of Computing, Clemson University*
-**
+***Josiah Hester, Timothy Scott, Jacob Sorber***  
+***School of Computing, Clemson University***
+
 
 
 Our paper, ["Ekho: Realistic and Repeatable Experimentation for Tiny Energy-Harvesting Sensors"](http://dl.acm.org/citation.cfm?id=2668332.2668336&coll=DL&dl=ACM&CFID=454323450&CFTOKEN=17646013) describes the design and evaluation of a new tool for recording and replaying energy harvesting conditions. Energy harvesting is a necessity for many small, embedded sensing devices, that must operate maintenance-free for long periods of time. However, understanding how the environment changes and it's effects on device behavior has always been a source of frustration. Ekho allows system designers working with ultra low power devices, to realistically predict how new hardware and software configurations will perform before deployment. By taking advantage of electrical characteristics all energy sources share, Ekho is able to emulate many different energy sources (e.g., Solar, RF, Thermal, and Vibrational) and takes much of the guesswork out of experimentation with tiny, energy harvesting sensing systems.
@@ -82,6 +82,8 @@ Once the PCB is in hand, you can either:
 
 *Note that the OpenGL rendering is somewhat uneccessary with emulate, you can conduct emulate without the rendering and with only one Teensy 3.1 with slight modifications to the code. This simplifies the experimental setup. Post an issue here if you require more info on how to do this*
 
+### License
+We use the [CRAPL License](http://matt.might.net/articles/crapl/) for all things Ekho. The basic idea is we are not responsible for the code "working" nor do we provide warranties. Everything including hardware is provided as-is.
 
 ### Contact Us
 - [Josiah Hester](http://josiahhester.com)
