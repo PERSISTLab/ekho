@@ -26,15 +26,15 @@
 
 using namespace std;
 
-#define BAUD_RATE 256000
 #define COUNT 500
 #define window_width 1240
 #define window_height 800
-#define ALL_CURVES_LEN 100
+#define ALL_CURVES_LEN 50
 #define NUMPOINTS 65
 #define DEGREE 5
-#define RESISTANCE 453
-#define DAC_DIVISION 4
+#define RESISTANCE 410
+#define DAC_DIVISION 2.5
+#define SHOW_PROGRESS 1
 
 unsigned char buf[8];
 int port;
@@ -47,16 +47,19 @@ int indexInAllCurves = 0;
 int indexInBufCurves = 0;
 uint64_t time_per_frame;
 double dac_map[4097];
+double dac_map_mult[4097];
 FILE *surface_inf;
 
 /* Rendering constants */
 #define xinterval 3.0f
 #define xstart (xinterval * (ALL_CURVES_LEN) / 2 * -1)
-#define yscale 1000.0f
+#define yscale 10000.0f
 #define zscale -1.5f
-#define time_per_frame 35
+#define time_per_frame 55
 
 double VOLTAGES[NUMPOINTS]  = { 0, 0.12085189123076923, 0.24170378246153845,0.3625556736923077, 0.4834075649230769, 0.6042594561538461, 0.7251113473846154, 0.8459632386153846, 0.9668151298461538, 1.087667021076923, 1.2085189123076923, 1.3293708035384615, 1.4502226947692307, 1.571074586, 1.6919264772307692, 1.8127783684615384, 1.9336302596923076, 2.054482150923077, 2.175334042153846, 2.2961859333846153, 2.4170378246153845, 2.5378897158461537, 2.658741607076923, 2.779593498307692, 2.9004453895384614, 3.0212972807692307, 3.142149172, 3.263001063230769, 3.3838529544615383, 3.5047048456923076, 3.625556736923077, 3.746408628153846, 3.8672605193846152, 3.9881124106153845, 4.108964301846154, 4.229816193076923, 4.350668084307692, 4.471519975538461, 4.592371866769231, 4.713223758, 4.834075649230769, 4.954927540461538, 5.0757794316923075, 5.196631322923077, 5.317483214153846, 5.438335105384615, 5.559186996615384, 5.680038887846154, 5.800890779076923, 5.921742670307692, 6.042594561538461, 6.1634464527692305, 6.284298344, 6.405150235230769, 6.526002126461538, 6.646854017692307, 6.767705908923077, 6.888557800153846, 7.009409691384615, 7.130261582615384, 7.251113473846154, 7.371965365076923, 7.492817256307692, 7.613669147538461, 7.7345210387692305 };
+
+uint16_t dacvalues[65];
 
 /* Lights and color */
 GLfloat LightAmbient[] = { 0.05f, 0.05f, 0.05f, 1.0f };
@@ -96,7 +99,7 @@ void display(void) {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, cyan);
   
 	glColor3f(0.3f, 0.7f, 0.0f);
-	/*glBegin(GL_QUAD_STRIP);
+	glBegin(GL_QUAD_STRIP);
 		for (int i = indexInAllCurves, x = ALL_CURVES_LEN; x > 0; i = (i + 1) % ALL_CURVES_LEN, x--) {
 	    	int nextCurvendx = (i + 1) % ALL_CURVES_LEN;
 			if(x != 1) {
@@ -126,8 +129,8 @@ void display(void) {
 			}
 		}
 	glEnd();
-	*/
-
+	
+#if SHOW_PROGRESS	
 	// Paint most recent curve to last curve, keep pointer to
 	// Index in array, then go back wards (modulus) till wrap around
 	glColor3f(0.1f, 0.4f, 0.9f);
@@ -153,26 +156,42 @@ void display(void) {
 					rectpoints[2] = bottomleft;
 					rectpoints[3] = bottomright;
 					Vector3d normal = calc_normal(rectpoints);
-/*			if(j == allcurves_path[i]) {
-				glColor3f(0.1f, 0.4f, 0.0f);
-			}*/
+
 					glNormal3f(normal.x, normal.y, normal.z);
 					glVertex3f(topright.x, topright.y, topright.z); // Top right
 					glVertex3f(topleft.x, topleft.y, topleft.z); // Top left
 					glVertex3f(bottomleft.x, bottomleft.y, bottomleft.z); // Bottom left
 					glVertex3f(bottomright.x, bottomright.y, bottomright.z); // Bottom right
-/*			if(j == allcurves_path[i]) {
-				glColor3f(0.1f, 0.4f, 0.9f);
-			}*/
+
 		  }
 		}
-	}
-	
+	}	
 	glEnd();
+#endif
 
   glutSwapBuffers();
 }
 
+double dac_mult_lookup(double dacvalue) {
+	int low = 0;
+	int high = 4095;
+	int mid = 0;
+	
+	// edge cases
+	if(dacvalue < dac_map[0]) return dac_map_mult[0];
+	if(dacvalue > dac_map[4095]) return dac_map_mult[4095];
+	
+	// binary search
+	while (low <= high) {
+		mid = (low + high) / 2;
+		if(dac_map[mid] >= dacvalue){
+			high = mid-1;
+		} else {
+			low = mid + 1;
+		}
+	}
+	return dac_map_mult[low];
+}
 
 void initGL() {
 	
@@ -205,77 +224,71 @@ void initGL() {
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE); 
 }
 
-
-void reshape(int width, int height) {
-//	initGL();
-}
-
-void idle(void) {
-	// Read in curves from surface_render / record
-	fread(&allcurves[indexInAllCurves], sizeof(double), NUMPOINTS, stdin);
-	indexInAllCurves = (indexInAllCurves + 1) % ALL_CURVES_LEN;
-
-	glutPostRedisplay();
-}
-
-uint16_t dacvalues[NUMPOINTS];
 unsigned char teensybufo[NUMPOINTS * 2];
+int shown = 0;
 void timer(int unused)
 {
-	// TODO Make sure we play out the MIDDLE curve so the trace starts in the middle
-	// Make buffering work 
-	int i=0;
 	int n = fread(&allcurves[indexInAllCurves], sizeof(double), NUMPOINTS, surface_inf);
-	printf("readfromfile=%d\n", n);
+
 	// Get DAC values for newest curve to play out
 	for(int i =0;i<NUMPOINTS;i++) {
-		double dacValueV = ((RESISTANCE * allcurves[indexInAllCurves][i])  + VOLTAGES[i]) / DAC_DIVISION;
-		dacvalues[i] = (int)(dacValueV /  (3.23 / 4096));
+		// Convert to dac voltage value
+		double dacValueV = ((RESISTANCE * allcurves[indexInAllCurves][i] + VOLTAGES[i]));
+		// Use dacmap to convert to actual pre-amplified voltage we should play out with Teensy
+		dacValueV = dacValueV * dac_mult_lookup(dacValueV);
 		
+		// Now convert dac voltage to 12-bit digital 
+		dacvalues[i] = (uint16_t)(dacValueV /  (3.28 / 4096));
+	  	printf("%d,", dacvalues[i]);	
 	}
 	
-	// Get back last 64 voltages played out for last curve from 3rd teensy 
+	
+#if SHOW_PROGRESS		
+	// Get back last voltages played out for last curve from DAQ teensy 
 	n = write(daqport, teensybufo, 1);
 	if(n < 1) {
 		fprintf(stderr, "error asking for update point from daqport\n");
 		exit(0);
 	}
 	n = read(daqport, teensybufo, 2);
+	
 	if (n < 2) {
 		fprintf(stderr, "error reading update point from daqport\n");
 		exit(0);
 	}
 	usleep(10);
+#endif
 	// Send curve to teensy
 	n = write(port, dacvalues, NUMPOINTS * 2);
 	printf("sent=%d\n", n);
 	if (n < NUMPOINTS * 2) {
 		fprintf(stderr, "error writing dac curve to port\n");
 		exit(0);
-	}	
+	}
 
-	
+#if SHOW_PROGRESS	
+	// Display progress along emulation curve
 	uint16_t retADC  = (teensybufo[0] << 8) + teensybufo[1];
-	double retvoltage = retADC * (3.3 / 4096) * 4;
-	printf("%" PRIu16 ",=%lf\n", retADC, retvoltage);
+	double retvoltage = retADC * (3.28 / 4096) * 4;
+	printf(":adc is %" PRIu16 ",=%lf\n", retADC, retvoltage);
+	int i=0;
 	for(i=1;i<NUMPOINTS;i++) {
 		if(retvoltage >= VOLTAGES[i-1] && retvoltage <= VOLTAGES[i])
 			break;
 	}
-	allcurves_path[(indexInAllCurves - 1) % ALL_CURVES_LEN] = i;
+	allcurves_path[indexInAllCurves % ALL_CURVES_LEN] = i;
+#endif
+	
 	indexInAllCurves = (indexInAllCurves + 1) % ALL_CURVES_LEN;
 	
     glutPostRedisplay();
     glutTimerFunc(time_per_frame, timer, 0);
+
 }
 
 /* Serial init and configuration */
 void init_serial(int argc, char **argv) {
 	struct termios settings;
-	if (argc < 3) {
-		fprintf(stderr, "Usage:   emulate <emulate port> <daq port>\n");
-		exit(0);
-	}
 
 	// Open the serial port
 	port = open(argv[1], O_RDWR);
@@ -290,7 +303,7 @@ void init_serial(int argc, char **argv) {
 	tcsetattr(port, TCSANOW, &settings);	
 	
 	
-	
+#if SHOW_PROGRESS		
 	// Open serial daqport
 	daqport = open(argv[2], O_RDWR);
 	if (daqport < 0) {
@@ -302,47 +315,42 @@ void init_serial(int argc, char **argv) {
 	tcgetattr(daqport, &settings);
 	cfmakeraw(&settings);
 	tcsetattr(daqport, TCSANOW, &settings);
-	
+#endif	
 }
 
-int main(int argc, char **argv) {
-	// Check command line arguments
-	// Sleep for a second
-	usleep(1000000);
-	// Load file
-	surface_inf=fopen("surface.raw", "r");
-	// Load surface
-/*	// Load DAC map
-	FILE * dacFile=fopen("dacMap.dat", "r");
+void loadmap(char mapfname[], double maparray[]) {
+	// Load DAC map
+	FILE * dacFile=fopen(mapfname, "r");
 	char line[128];
 	int ndx=0;
 	while(fgets(line, 128, dacFile) != NULL) {
-		dac_map[ndx++] = atof(line);
+		maparray[ndx++] = atof(line);
 	}
 	// Edge case
-	dac_map[ndx]=dac_map[ndx-1];
+	maparray[ndx]=maparray[ndx-1];
 	fclose(dacFile);
+}
+
+int main(int argc, char **argv) {
+	if (argc < 2) {
+		fprintf(stderr, "Usage:   emulate <emulate port> <daq port>(optional) <surface file (optional)>\n");
+		exit(0);
+	}
+	// Sleep for a second
+	usleep(1000000);
 	
-	// Load first ALL_CURVES_LEN # of curves for double buffering purposes
-	// Get estimated update rate from this
-	uint64_t start;
-    uint64_t end;
-    uint64_t elapsed;
-    uint64_t elapsed_nano;
-    static mach_timebase_info_data_t sTimebaseInfo;
-	int curves_loaded=0;
-	start = mach_absolute_time();
-	while(curves_loaded++ < ALL_CURVES_LEN) {
-		fread(&allcurves_buffer[curves_loaded], sizeof(double), NUMPOINTS, stdin);
+	// Load file
+	if(argc > 3) {
+		surface_inf=fopen(argv[3], "r");
+	} else {
+		surface_inf=fopen("surface.raw", "r");
 	}
-	end = mach_absolute_time();
-	elapsed = end - start;
-	if ( sTimebaseInfo.denom == 0 ) {
-		(void) mach_timebase_info(&sTimebaseInfo);
-	}
-	elapsed_nano = elapsed * sTimebaseInfo.numer / sTimebaseInfo.denom;
-	time_per_frame = (elapsed_nano / ALL_CURVES_LEN) / 1000;
-	printf("time_per_frame=%" PRIu64 "\n", time_per_frame); */
+	
+	// Load DAC maps
+	char dm_literal[] = "febprofile/dacmap.dat";
+	loadmap(dm_literal, dac_map);
+	char dmm_literal[] = "febprofile/dacmapmult.dat";
+	loadmap(dmm_literal, dac_map_mult);
 	
 	// Now init serial to emulation teensy, and setup OpenGL surface rendering
 	init_serial(argc, argv);
@@ -356,8 +364,6 @@ int main(int argc, char **argv) {
 	initGL();
     //pass the callbacks
     glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-	//glutIdleFunc(idle);
    	glutTimerFunc(time_per_frame, timer, 0);
 	
 	// Start loop

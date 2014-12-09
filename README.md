@@ -19,7 +19,7 @@ For more information on the concept, design, and evaluation of Ekho, checkout th
 - [Teensy ADC package installed](https://github.com/pedvide/ADC)
 - [GNU Scientific Library (GSL)](http://brewformulas.org/Gsl)
 - 2x [Teensy 3.1 Dev Boards](https://www.sparkfun.com/products/12646)
-- 1x [MCP413X/415X/423X/425X Digital Potentiometer](https://www.sparkfun.com/products/10613)
+- 1x [MCP413X/415X/423X/425X Digital Potentiometer](https://www.sparkfun.com/products/10613). Prefferably the 100k from Digikey: # MCP4152-104E/P-ND
 - Breadboard, headers, jumpers, iron will
 
 
@@ -40,7 +40,7 @@ Once the PCB is in hand, you can either:
 
 1. Flash the Teensy 3.1 with the `code/record/micro/EkhoRecord_t3.ino` image using the Arduino application.
 
-2. Connect the Teensy 3.1, the digital potentiometer (synthetic load) and the Analog-front end as shown above.
+2. Connect the Teensy 3.1, the digital potentiometer / rheostat (synthetic load) and the Analog-front end as shown above.
 
 3. Connect jumpers JP4 and the left side of JP1 for replay path.
 
