@@ -19,7 +19,8 @@ For more information on the concept, design, and evaluation of Ekho, checkout th
 - [Teensy ADC package installed](https://github.com/pedvide/ADC)
 - [GNU Scientific Library (GSL)](http://brewformulas.org/Gsl)
 - 2x [Teensy 3.1 Dev Boards](https://www.sparkfun.com/products/12646)
-- 1x [MCP413X/415X/423X/425X Digital Potentiometer](https://www.sparkfun.com/products/10613). Prefferably the 100k from Digikey: # MCP4152-104E/P-ND
+- 1x MCP413X/415X/423X/425X Digital Potentiometer / Rheostat. From Digikey [[1]](http://www.digikey.com/product-search/en?KeyWords=MCP4152-104E%2FP-ND&WT.z_header=search_go), [[2]](http://www.digikey.com/product-search/en?vendor=0&keywords=MCP4132-104E%2FP), or [Mouser](http://www.mouser.com/ProductDetail/Microchip-Technology/MCP4132-104E-P/?qs=hH%2bOa0VZEiDp%2benpCDHLVg==
+)
 - Breadboard, headers, jumpers, iron will
 
 
