@@ -38,6 +38,8 @@ Once the PCB is in hand, you can either:
 - - -
 ## Recording IV-surfaces
 ![image](https://raw.githubusercontent.com/jhester/ekho/master/record.png)
+The recording interface allows you to record energy environments (represented as IV-surfaces) in real time.
+At its simplest the record program just serves to pipe data (specifically: IV-pairs) from the Teensy to the desktop. The bulk of the remaining code is concerned with converting sets of IV-pairs to IV-curves (using simple polynomial regression) and saving them to a file, and then finally rendering the result in near-real time with OpenGL. 
 
 1. Flash the Teensy 3.1 with the `code/record/micro/EkhoRecord_t3.ino` image using the Arduino application.
 
