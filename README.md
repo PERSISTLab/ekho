@@ -23,6 +23,19 @@ For more information on the concept, design, and evaluation of Ekho, checkout th
 )
 - Breadboard, headers, jumpers, iron will
 
+On a Mac, after installing the XCode command line tools, and then Homebrew, install GSL with:
+
+```
+brew install gsl
+```
+
+On Ubuntu install GSL with:
+
+```
+sudo apt-get install gsl-bin
+```
+
+If you are using other Linux distros, then you already know what to do.
 
 ### Analog-Front End 
 ![image](https://644db4de3505c40a0444-327723bce298e3ff5813fb42baeefbaa.ssl.cf1.rackcdn.com/uploads/project/top_image/FU0xl3ek/i.png)
@@ -39,7 +52,9 @@ Once the PCB is in hand, you can either:
 ## Recording IV-surfaces
 ![image](https://raw.githubusercontent.com/jhester/ekho/master/record.png)
 The recording interface allows you to record energy environments (represented as IV-surfaces) in real time.
-At its simplest the record program just serves to pipe data (specifically: IV-pairs) from the Teensy to the desktop. The bulk of the remaining code is concerned with converting sets of IV-pairs to IV-curves (using simple polynomial regression) and saving them to a file, and then finally rendering the result in near-real time with OpenGL. 
+At its simplest the record program just serves to pipe data (specifically: IV-pairs) from the Teensy to the desktop. The bulk of the remaining code is concerned with converting sets of IV-pairs to IV-curves (using simple polynomial regression) and saving them to a file, and then finally rendering the result in near-real time with OpenGL. The generated files can be analyzed, or emulated at a later date. For more information on how recording works, and the novel techniques we use to expore an IV-surface, [check the paper.](http://dl.acm.org/citation.cfm?id=2668336)
+
+To record an IV-surface:
 
 1. Flash the Teensy 3.1 with the `code/record/micro/EkhoRecord_t3.ino` image using the Arduino application.
 
@@ -65,6 +80,7 @@ At its simplest the record program just serves to pipe data (specifically: IV-pa
 
 ## Replaying IV-surfaces
 ![image](https://raw.githubusercontent.com/jhester/ekho/master/emulate.png)
+Emulating allows the user to realistically and repeatably test different software, and hardware configurations in an energy harvesting environment. For more information on how emulation works, and accuracy measures [check out the paper.](http://dl.acm.org/citation.cfm?id=2668336)
 
 1. Flash a Teensy 3.1 with the `code/emulate/micro/EkhoEmulate_t3.ino` image using the Arduino application.
 
