@@ -32,7 +32,7 @@ brew install gsl
 On Ubuntu install GSL with:
 
 ```
-sudo apt-get install gsl-bin
+sudo apt-get install gsl-bin libgsl0-dbg libgsl0-dev
 ```
 
 If you are using other Linux distros, then you already know what to do.
