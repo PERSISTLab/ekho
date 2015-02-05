@@ -52,7 +52,7 @@ Once the PCB is in hand, you can either:
 ## Recording IV-surfaces
 ![image](https://raw.githubusercontent.com/jhester/ekho/master/record.png)
 The recording interface allows you to record energy environments (represented as IV-surfaces) in real time.
-At its simplest the record program just serves to pipe data (specifically: IV-pairs) from the Teensy to the desktop. The bulk of the remaining code is concerned with converting sets of IV-pairs to IV-curves (using simple polynomial regression) and saving them to a file, and then finally rendering the result in near-real time with OpenGL. The generated files can be analyzed, or emulated at a later date. For more information on how recording works, and the novel techniques we use to expore an IV-surface, [check the paper.](http://dl.acm.org/citation.cfm?id=2668336)
+At its simplest the record program just serves to pipe data (specifically: IV-pairs) from the Teensy to the desktop. The bulk of the remaining code is concerned with converting sets of IV-pairs to IV-curves (using simple polynomial regression) and saving them to a file, and then finally rendering the result in near-real time with OpenGL. The generated files can be analyzed, or emulated at a later date. For more information on how recording works, and the novel techniques we use to explore an IV-surface, [check the paper.](http://dl.acm.org/citation.cfm?id=2668336)
 
 To record an IV-surface:
 
@@ -106,7 +106,7 @@ Emulating allows the user to realistically and repeatably test different softwar
 *Note that the OpenGL rendering is somewhat uneccessary with emulate, you can conduct emulate without the rendering and with only one Teensy 3.1 with slight modifications to the code. This simplifies the experimental setup. Post an issue here if you require more info on how to do this*
 
 ### License
-We use the [CRAPL License](http://matt.might.net/articles/crapl/) for all things Ekho. The basic idea is we are not responsible for the code "working" nor do we provide warranties. Everything including hardware is provided as-is.
+We use the [CRAPL License](http://matt.might.net/articles/crapl/) for all things Ekho. The basic idea is we are not responsible for the code "working" nor do we provide warranties. This is research quality code (which means lots of hacks). Everything including hardware is provided as-is.
 
 ### Contact Us
 - [Josiah Hester](http://josiahhester.com)
