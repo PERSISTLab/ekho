@@ -4,6 +4,14 @@ Ekho: Realistic and Repeatable Experimentation for Tiny Energy-Harvesting Sensor
 ***School of Computing, Clemson University***
 
 
+- [Prerequisites](#)
+	- [Desktop Analog-Front End](#)
+	- [Mobile Analog-Front End](#)	
+- [Recording IV-surfaces](#)
+- [Replaying IV-surfaces](#)
+- [License](#)
+- [Contact Us](#)
+
 
 Our paper, ["Ekho: Realistic and Repeatable Experimentation for Tiny Energy-Harvesting Sensors"](http://dl.acm.org/citation.cfm?id=2668332.2668336&coll=DL&dl=ACM&CFID=454323450&CFTOKEN=17646013) describes the design and evaluation of a new tool for recording and replaying energy harvesting conditions. Energy harvesting is a necessity for many small, embedded sensing devices, that must operate maintenance-free for long periods of time. However, understanding how the environment changes and it's effects on device behavior has always been a source of frustration. Ekho allows system designers working with ultra low power devices, to realistically predict how new hardware and software configurations will perform before deployment. By taking advantage of electrical characteristics all energy sources share, Ekho is able to emulate many different energy sources (e.g., Solar, RF, Thermal, and Vibrational) and takes much of the guesswork out of experimentation with tiny, energy harvesting sensing systems.
 
@@ -37,7 +45,7 @@ sudo apt-get install gsl-bin libgsl0-dbg libgsl0-dev
 
 If you are using other Linux distros, then you already know what to do.
 
-### Analog-Front End 
+### Desktop Analog-Front End 
 ![image](https://644db4de3505c40a0444-327723bce298e3ff5813fb42baeefbaa.ssl.cf1.rackcdn.com/uploads/project/top_image/FU0xl3ek/i.png)
 To do anything useful with Ekho, you need the custom designed Analog-front-end. The PCB for the analog front end can [be ordered from OSH Park](https://oshpark.com/shared_projects/FU0xl3ek). We are hosting it on OSH Park so anyone can easily, and cheaply get the PCB printed. 
 
@@ -47,16 +55,21 @@ Once the PCB is in hand, you can either:
 - Order a stencil from [OSH Stencils](https://www.oshstencils.com) and stencil the board.
 - Have [Advanced Assembly](http://www.aa-pcbassembly.com/Get-a-PCB-Assembly-Quote.htm) (or a similiar low-volume fab house) assemble it for you. Just send them the gerbers, the BOM, and the XYRS file (.mnt inside board/).
 
+### Mobile Analog-Front End 
+![image](https://644db4de3505c40a0444-327723bce298e3ff5813fb42baeefbaa.ssl.cf1.rackcdn.com/uploads/project/top_image/MQtVNbW9/i.png)
+
+For a version of Ekho that can be deployed for long periods of time (for example with an existing sensor network deployment) order the Mobile Version of Ekho from OSH Park.
 
 - - -
 ## Recording IV-surfaces
-![image](https://raw.githubusercontent.com/jhester/ekho/master/record.png)
 The recording interface allows you to record energy environments (represented as IV-surfaces) in real time.
-At its simplest the record program just serves to pipe data (specifically: IV-pairs) from the Teensy to the desktop. The bulk of the remaining code is concerned with converting sets of IV-pairs to IV-curves (using simple polynomial regression) and saving them to a file, and then finally rendering the result in near-real time with OpenGL. The generated files can be analyzed, or emulated at a later date. For more information on how recording works, and the novel techniques we use to explore an IV-surface, [check the paper.](http://dl.acm.org/citation.cfm?id=2668336)
+At its simplest the record program just serves to pipe data (specifically: IV-pairs) from the Teensy to the desktop. The bulk of the remaining code is concerned with converting sets of IV-pairs to IV-curves (using simple polynomial regression) and saving them to a file, and then finally rendering the result in near-real time with OpenGL. The generated files can be analyzed, or emulated at a later date. For more information on how recording works, and the novel techniques we use to explore an IV-surface, [check the paper.](http://dl.acm.org/citation.cfm?id=2668336).
 
-To record an IV-surface:
+### Desktop
+![image](https://raw.githubusercontent.com/jhester/ekho/master/record.png)
+To record an IV-surface with the desktop version of Ekho, first load the firmware on the Teensy:
 
-1. Flash the Teensy 3.1 with the `code/record/micro/EkhoRecord_t3.ino` image using the Arduino application.
+1. Flash the Teensy 3.1 with the `firmware/record/EkhoRecord_t3.ino` image using the Arduino application.
 
 2. Connect the Teensy 3.1, the digital potentiometer / rheostat (synthetic load) and the Analog-front end as shown above.
 
@@ -66,25 +79,46 @@ To record an IV-surface:
   
 3. Set the gain on the Analog-front-end
 
+4. Connect the harvester you want to record to Ekho (HARV(DC) pins).
+
+
 3. Build the `surface_render` executable
 
 	```
-	$ cd code/record/pc 
-	$ make record`
+	$ cd software/record 
+	$ make record
 	```
 
-4. Run the executable, supplying the port of the connected Teensy 3.1. The surface will be written to a file named `surface.raw` in the same directory. The surface will be rendered as it is captured using OpenGL.
+4. Run the executable, supplying the port of the connected Teensy 3.1. The surface will be written to a file named `surface.raw` in the same directory. The surface will be rendered as it is captured using OpenGL. Don't forget to excite the harvester so you can see the surface (for example, if recording a solar panel, shine a light on the panel).
 
+### Mobile
+For the mobile version, the raw data can be taken from the micro SD card, or piped from the Teensy in the same way as the desktop version. The Ekho Mobile Front End board functions as a daughter board that sits on top (ot below) the Teensy. 
 
+Piping the pairs to the desktop via USB is shown here.
+
+1. Flash the Teensy with the `firmware/record/EkhoRecordMobile_t3.ino` program.
+
+2. Connect the harvester you want to record to the GND and H+ pins on the Ekho board (refer to the silkscreen). Ekho only supports DC harvester inputs.
+
+3. Attach the Mobile Analog Front-End-Board to the Teensy.
+
+4. Build the `surface_render` executable
+
+	```
+	$ cd software/record 
+	$ make record
+	```
+
+5. Run the executable, supplying the port of the connected Teensy 3.1. The surface will be written to a file named `surface.raw` in the same directory. The surface will be rendered as it is captured using OpenGL. Don't forget to excite the harvester so you can see the surface (for example, if recording a solar panel, shine a light on the panel).
 
 
 ## Replaying IV-surfaces
 ![image](https://raw.githubusercontent.com/jhester/ekho/master/emulate.png)
 Emulating allows the user to realistically and repeatably test different software, and hardware configurations in an energy harvesting environment. For more information on how emulation works, and accuracy measures [check out the paper.](http://dl.acm.org/citation.cfm?id=2668336)
 
-1. Flash a Teensy 3.1 with the `code/emulate/micro/EkhoEmulate_t3.ino` image using the Arduino application.
+1. Flash a Teensy 3.1 with the `firmware/emulate/EkhoEmulate_t3.ino` image using the Arduino application.
 
-2. Flash a seoncd Teensy 3.1 with the `code/emulate/micro/EkhoDAQ_t3.ino` image using the Arduino application.
+2. Flash a seoncd Teensy 3.1 with the `firmware/emulate/EkhoDAQ_t3.ino` image using the Arduino application.
 
 3. Connect the jumper across JP14 (near the "CONNECT FOR EMULATE" silkscreen)
 
@@ -97,8 +131,8 @@ Emulating allows the user to realistically and repeatably test different softwar
 3. Build the `emulate_render` executable
 
 	```
-	$ cd code/emulate/pc 
-	$ make emulate`
+	$ cd software/emulate 
+	$ make emulate
 	```
 
 4. Run the executable, supplying both ports of the connected Teensy 3.1. The surface will be read from a file named `surface.raw` in the same directory. The surface will be rendered with a trace showing the execution path across the IV-surface as it is captured using OpenGL.
