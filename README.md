@@ -4,10 +4,12 @@ Ekho: Realistic and Repeatable Experimentation for Tiny Energy-Harvesting Sensor
 ***School of Computing, Clemson University***
 
 
-- [Prerequisites](#)
+- [Prerequisites](#head1234)
 	- [Desktop Analog-Front End](#)
-	- [Mobile Analog-Front End](#)	
+	- [Mobile Analog-Front End](#)
 - [Recording IV-surfaces](#)
+	- [Desktop](#)
+	- [Mobile](#)
 - [Replaying IV-surfaces](#)
 - [License](#)
 - [Contact Us](#)
@@ -20,7 +22,7 @@ This paper received the BEST PAPER Award at the [12th ACM Conference on Embedded
 For more information on the concept, design, and evaluation of Ekho, checkout the [presentation](https://github.com/jhester/ekho/blob/master/presentation/ekho-sensys-notes.pdf?raw=true), [notes](https://github.com/jhester/ekho/blob/master/presentation/ekho-sensys-notes.pdf?raw=true), and the [paper](http://dl.acm.org/citation.cfm?id=2668332.2668336&coll=DL&dl=ACM&CFID=454323450&CFTOKEN=17646013)  itself.
 
 
-## Prerequisites
+## <a name="head1234"></a> Prerequisites
 - Mac or Linux
 - [Arduino version 1.0.5 or 1.0.6.](http://arduino.cc/en/main/software)
 - [Teensyduino 1.19+](https://www.pjrc.com/teensy/td_download.html)
